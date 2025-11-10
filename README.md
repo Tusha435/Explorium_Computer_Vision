@@ -1,6 +1,6 @@
 # Computer Vision Detection Models Comparison Framework
 
-A comprehensive framework for comparing different computer vision object detection techniques including **SSD, Faster R-CNN, YOLOv8, YOLOv11, and DETR** on the same video datasets. Supports COCO dataset classes (person, bicycle, car, motorcycle, etc.) with both static video and live camera processing.
+A comprehensive framework for comparing different computer vision object detection techniques including **SSD, Faster R-CNN, YOLOv8, YOLOv11, and DETR** on videos and images. Supports COCO dataset classes (person, bicycle, car, motorcycle, etc.) with static videos, images, and live camera processing. Includes **10 sample videos** and **10 sample images** for immediate testing!
 
 ## 🌟 Features
 
@@ -30,11 +30,14 @@ A comprehensive framework for comparing different computer vision object detecti
   - ResNet-101 backbone
   - Transformer-based detection
 
-### Video Processing
+### Input Processing
 - ✅ **Static Video Files** (.mp4, .avi, .mov, etc.)
+- ✅ **Image Files** (.jpg, .png, .bmp, .tiff, etc.)
+- ✅ **Batch Image Processing** (process entire directories)
 - ✅ **Live Camera Feed** (webcam, USB camera)
-- ✅ **Sample Video Generator** (synthetic test videos)
-- ✅ **Video Downloader** (download test videos)
+- ✅ **10 Sample Videos** (ready-to-download traffic scenes)
+- ✅ **10 Sample Images** (ready-to-download test images)
+- ✅ **Synthetic Video Generator** (generate test videos)
 
 ### Detection Capabilities
 - **80 COCO Classes** including:
@@ -84,7 +87,52 @@ pip install -r requirements.txt
 python -c "import tensorflow as tf; print('GPU Available:', tf.config.list_physical_devices('GPU'))"
 ```
 
+5. **Download sample videos and images** (optional but recommended):
+```bash
+python download_samples.py
+```
+
+This will download:
+- **10 sample videos** with traffic, vehicles, and pedestrians
+- **10 sample images** with various urban scenes
+
 ## 📊 Usage
+
+### 0. Download Sample Media (Recommended for First-Time Users!)
+
+```bash
+# Download all samples (10 videos + 10 images)
+python download_samples.py
+
+# Download only videos
+python download_samples.py --videos-only
+
+# Download only images
+python download_samples.py --images-only
+
+# List available samples
+python download_samples.py --list
+```
+
+**Sample Videos Include:**
+- Busy highway traffic
+- City streets with pedestrians
+- Parking lots with vehicles
+- Bicycle riders
+- Motorcycle traffic
+- Bus stations
+- Crosswalks
+- Traffic intersections
+- And more!
+
+**Sample Images Include:**
+- Street traffic scenes
+- Pedestrian crossings
+- Cars in parking lots
+- Bicycles and motorcycles
+- Buses and trucks
+- Mixed urban traffic
+- And more!
 
 ### 1. Single Model Detection
 
@@ -101,6 +149,16 @@ python detect.py --camera 0 --model yolov11n
 #### Use Synthetic Test Video
 ```bash
 python detect.py --generate-synthetic --model detr
+```
+
+#### Detect on Image File
+```bash
+python detect.py --image path/to/image.jpg --model yolov8n --output result.png
+```
+
+#### Batch Process Images (Entire Directory)
+```bash
+python detect.py --image-dir sample_images/ --model yolov11s
 ```
 
 #### Filter Specific Classes (Person, Bicycle, Car, Motorcycle)

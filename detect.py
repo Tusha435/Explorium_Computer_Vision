@@ -1,9 +1,10 @@
 """
-Single model object detection on video or live camera.
+Single model object detection on video, images, or live camera.
 """
 import argparse
+from pathlib import Path
 from src.models import *
-from src.video_processor import VideoProcessor
+from src.video_processor import VideoProcessor, ImageProcessor
 from src.utils.video_downloader import VideoDownloader
 
 
@@ -12,6 +13,8 @@ def main():
 
     # Input options
     parser.add_argument('--video', type=str, help='Path to video file')
+    parser.add_argument('--image', type=str, help='Path to image file')
+    parser.add_argument('--image-dir', type=str, help='Path to directory containing images')
     parser.add_argument('--camera', type=int, help='Camera index for live detection')
     parser.add_argument('--download-sample', action='store_true',
                        help='Download and use sample video')
@@ -46,8 +49,9 @@ def main():
     args = parser.parse_args()
 
     # Validate input
-    if not any([args.video, args.camera is not None, args.download_sample, args.generate_synthetic]):
-        parser.error("Must specify --video, --camera, --download-sample, or --generate-synthetic")
+    if not any([args.video, args.image, args.image_dir, args.camera is not None,
+                args.download_sample, args.generate_synthetic]):
+        parser.error("Must specify --video, --image, --image-dir, --camera, --download-sample, or --generate-synthetic")
 
     print(f"\n{'='*80}")
     print("OBJECT DETECTION")
@@ -83,9 +87,6 @@ def main():
     detector.load_model()
     print()
 
-    # Create processor
-    processor = VideoProcessor(detector, output_dir=args.output_dir)
-
     # Handle input source
     if args.download_sample or args.generate_synthetic:
         downloader = VideoDownloader()
@@ -99,17 +100,51 @@ def main():
 
         args.video = video_path
 
-    # Process
-    if args.camera is not None:
+    # Process based on input type
+    if args.image or args.image_dir:
+        # Image processing
+        image_processor = ImageProcessor(detector, output_dir=args.output_dir)
+
+        if args.image_dir:
+            # Batch process directory
+            image_dir = Path(args.image_dir)
+            image_files = []
+
+            # Collect all image files
+            for ext in ['*.jpg', '*.jpeg', '*.png', '*.bmp', '*.tiff']:
+                image_files.extend(image_dir.glob(ext))
+
+            if not image_files:
+                print(f"✗ No images found in {image_dir}")
+                return
+
+            print(f"Found {len(image_files)} images in {image_dir}")
+
+            image_processor.process_batch(
+                image_paths=image_files,
+                target_classes=args.target_classes
+            )
+        else:
+            # Single image
+            image_processor.process_image(
+                image_path=args.image,
+                output_path=args.output,
+                show_display=not args.no_display,
+                target_classes=args.target_classes
+            )
+
+    elif args.camera is not None:
         # Live camera
-        processor.process_live(
+        video_processor = VideoProcessor(detector, output_dir=args.output_dir)
+        video_processor.process_live(
             camera_index=args.camera,
             target_classes=args.target_classes,
             record_output=args.record
         )
     else:
         # Static video
-        processor.process_video(
+        video_processor = VideoProcessor(detector, output_dir=args.output_dir)
+        video_processor.process_video(
             video_path=args.video,
             output_path=args.output,
             show_display=not args.no_display,

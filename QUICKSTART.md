@@ -10,9 +10,43 @@ pip install -r requirements.txt
 
 # 2. Verify installation
 python -c "import tensorflow as tf; import torch; print('✓ Installation successful!')"
+
+# 3. Download sample media (RECOMMENDED!)
+python download_samples.py
 ```
 
-## Test with Synthetic Video (No video file needed!)
+This downloads **10 videos + 10 images** with traffic scenes for immediate testing!
+
+## Test with Sample Media (Recommended!)
+
+### Download Samples
+```bash
+# Download all (10 videos + 10 images)
+python download_samples.py
+
+# List what's available
+python download_samples.py --list
+```
+
+### Test on Sample Image
+```bash
+# Detect on a sample image
+python detect.py --image sample_images/street_traffic_cars.jpg --model yolov8n
+```
+
+### Test on Sample Video
+```bash
+# Detect on a sample video
+python detect.py --video sample_videos/traffic_highway_busy.mp4 --model yolov11n
+```
+
+### Batch Process All Sample Images
+```bash
+# Process all 10 sample images at once
+python detect.py --image-dir sample_images/ --model yolov8s
+```
+
+## Test with Synthetic Video (No download needed!)
 
 ### Test Single Model
 ```bash
