@@ -4,68 +4,54 @@ __pycache__/
 *$py.class
 *.so
 .Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
 *.egg-info/
-.installed.cfg
-*.egg
+dist/
+build/
 
 # Virtual environments
 venv/
 env/
 ENV/
-.venv
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
-*~
 .DS_Store
 
-# YOLOv8 models
+# Model weights (not source code)
 *.pt
-!yolov8*.pt
+*.pth
+*.ckpt
+!yolov*.pt
+/models/
+/checkpoints/
 
-# Videos and images
+# Videos
 *.mp4
 *.avi
 *.mov
 *.mkv
-*.jpg
-*.jpeg
-*.png
-!example.jpg
+sample_videos/*.mp4
+output/*.mp4
 
-# Analysis reports
-*_analysis_report.json
-*.log
+# Results
+comparison_results/
+output/
+*.csv
+*.json
+*.txt
+*.png
 
 # Jupyter
 .ipynb_checkpoints/
 *.ipynb
 
-# PyTorch
-*.pth
-*.ckpt
+# TensorFlow
+*.h5
+*.pb
 
 # Data
 data/
-videos/
-output/
-results/
-
-# System
-.cache/
-*.tmp
+datasets/
